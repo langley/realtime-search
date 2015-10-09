@@ -1,5 +1,6 @@
 package actors
 
+import play.api.Play.current
 import akka.actor.{ActorRef, Actor}
 import models.{SearchMatch, StopSearch, LogEntry, StartSearch}
 import play.api.libs.ws.WS
