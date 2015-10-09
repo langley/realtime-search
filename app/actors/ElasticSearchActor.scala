@@ -19,10 +19,12 @@ class ElasticsearchActor extends Actor {
   }
 
   private def percolate(logJson: JsValue, requestor: ActorRef) {
+    println(s"ElasticSearchActor got a percolate for ${logJson}")
     WS.url("http://localhost:9200/logentries/logentry/_percolate").post(Json.stringify(Json.obj("doc" -> logJson))).map {
       response =>
         val body = response.json
         val status = (body \ "ok").as[Boolean]
+        println(s"ElasticSearchActor response from ES = ${body} \nwith status = ${status}")
         if (status) {
           val matchingIds = (body \ "matches").asInstanceOf[JsArray].value.foldLeft(List[UUID]())((acc, v) => UUID.fromString(v.as[String]) :: acc)
           if (!matchingIds.isEmpty) {

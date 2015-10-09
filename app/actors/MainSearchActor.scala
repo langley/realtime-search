@@ -31,8 +31,14 @@ class MainSearchActor extends Actor {
     case startSearch: StartSearch => sender ! SearchFeed(startSearching(startSearch))
     case stopSearch: StopSearch => stopSearching(stopSearch)
     case searchMatch: SearchMatch => broadcastMatch(searchMatch)
-    case logEntry: LogEntry => elasticSearchActor ! logEntry
-    case Tick => logEntryProducerActor ! Tick
+    case logEntry: LogEntry => {
+      // println(s"GOT a LogEntry = ${logEntry}")
+      elasticSearchActor ! logEntry
+    }
+    case Tick => { 
+      // println(s"GOT A TICK @ ${new java.util.Date()} ") 
+      logEntryProducerActor ! Tick 
+    }
   }
 
   override def postStop() {
